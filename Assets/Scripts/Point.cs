@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class for storing point information and handling text disappearing
+/// </summary>
 public class Point : MonoBehaviour
 {
     [SerializeField] private float distance = 2;
     [SerializeField] private float transitionTime = 1;
     private float time;
-    public int number = 0;
-    public const int gemBaseScale = 1;
+    public const float gemBaseScale = 1;
     
     
     private static Sprite blueGem = null;
-    private static Sprite magentaGem = null;
     private RectTransform rectTransform;
     public bool started;
     private Text text;
@@ -27,10 +28,12 @@ public class Point : MonoBehaviour
 
     private void Start()
     {
-        rectTransform.localScale = new Vector3(Screen.height * gemBaseScale / GameController.baseHeight, Screen.height * gemBaseScale / GameController.baseHeight, 1);
+        print(Screen.height);
+        rectTransform.localScale = new Vector3(Screen.height * gemBaseScale / GameController.baseHeight, 
+                                               Screen.height * gemBaseScale / GameController.baseHeight, 
+                                               1);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (started)
@@ -50,16 +53,19 @@ public class Point : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Check if point is in radius of object's transform
+    /// </summary>
+    /// <param name="point">point in 2D space</param>
+    /// <returns>true if point is within object radius</returns>
     public bool InRadius(Vector2 point)
     {
         return Vector2.Distance(rectTransform.position, point) <= distance;
     }
-    
-    public void OnClick(Vector2 mousePosition)
-    {
-        
-    }
 
+    /// <summary>
+    /// Change current Gem image to blue
+    /// </summary>
     public void ChangeColor()
     {
         GetComponent<Image>().sprite = GetBlueGem();
@@ -67,11 +73,19 @@ public class Point : MonoBehaviour
         time = transitionTime;
     }
 
+    /// <summary>
+    /// Method to get position of point
+    /// </summary>
+    /// <returns>RectTransform position</returns>
     public Vector3 GetPosition()
     {
         return rectTransform.position;
     }
     
+    /// <summary>
+    /// Method to get Blue Gem sprite
+    /// </summary>
+    /// <returns>Sprite for Blue Gem (Blue button)</returns>
     public static Sprite GetBlueGem()
     {
         if (blueGem == null)
@@ -82,6 +96,10 @@ public class Point : MonoBehaviour
         return blueGem;
     }
 
+    /// <summary>
+    /// Method to set this points displayed text
+    /// </summary>
+    /// <param name="newText">New text</param>
     public void SetText(string newText)
     {
         if (text == null)
@@ -90,15 +108,4 @@ public class Point : MonoBehaviour
         }
         text.text = newText;
     }
-    
-    public static Sprite GetMagentaGem()
-    {
-        if (magentaGem == null)
-        {
-            magentaGem = Resources.Load<Sprite>("Textures/button_magenta");
-        }
-    
-        return magentaGem;
-    }
-
 }

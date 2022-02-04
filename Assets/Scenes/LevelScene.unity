@@ -492,6 +492,7 @@ RectTransform:
   - {fileID: 444391057}
   - {fileID: 2134594753}
   - {fileID: 1475537799}
+  - {fileID: 594935308}
   m_Father: {fileID: 2095865824}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -617,17 +618,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 594935307}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 203483560}
-  m_Father: {fileID: 2095865824}
-  m_RootOrder: 1
+  m_Father: {fileID: 518707997}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -121}
+  m_AnchoredPosition: {x: 0, y: -40.33333}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &594935309
@@ -1055,7 +1056,7 @@ MonoBehaviour:
     type: 3}
   ropePrefab: {fileID: 4390744671267529171, guid: 54d632df9dc0a6b4f9370782839e5883,
     type: 3}
-  pathToLevelData: Assets/Resources/Data/level_data.json
+  jsonFile: {fileID: 4900000, guid: 8ed7d3c77e1532249855f3ed2448c22c, type: 3}
   levelCollection:
     levels: []
 --- !u!4 &1111238000
@@ -1934,7 +1935,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 518707997}
-  - {fileID: 594935308}
   m_Father: {fileID: 633575738}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

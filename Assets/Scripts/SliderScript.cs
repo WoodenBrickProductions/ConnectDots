@@ -4,25 +4,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Script for Rope data and animations
+/// </summary>
 public class SliderScript : MonoBehaviour
 {
     [SerializeField] private float transitionTime = 1;
     private float time;
-    private Slider slider;
     private bool started = false;
-    private Text text;
     
-    
+    private Slider slider;
     private RectTransform rectTransform;
-    // Start is called before the first frame update
+
     void Awake()
     {
         slider = GetComponent<Slider>();
         rectTransform = slider.GetComponent<RectTransform>();
-        text = GetComponentInChildren<Text>();
+        slider.value = 0;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (started)
@@ -41,15 +41,22 @@ public class SliderScript : MonoBehaviour
         }
     }
 
-    public void SetTargetPositions(Vector2 position1, Vector2 position2)
+    /// <summary>
+    /// Set start and end positions for rope
+    /// </summary>
+    /// <param name="startPosition">Start position</param>
+    /// <param name="endPosition">End position</param>
+    public void SetTargetPositions(Vector2 startPosition, Vector2 endPosition)
     {
-        Vector2 delta = position2 - position1;
-        rectTransform.position = new Vector3(position1.x + delta.x / 2, position1.y + delta.y / 2, 0);
+        Vector2 delta = endPosition - startPosition;
+        rectTransform.position = new Vector3(startPosition.x + delta.x / 2, startPosition.y + delta.y / 2, 0);
         rectTransform.sizeDelta = new Vector2(20,delta.magnitude/2);
-        print(Vector2.Angle(new Vector2(0, -1), delta));
         rectTransform.rotation = Quaternion.Euler(0, 0, Vector2.SignedAngle(new Vector2(0, 1), delta));
     }
 
+    /// <summary>
+    /// Start rope fill animation
+    /// </summary>
     public void StartSlider()
     {
         started = true;

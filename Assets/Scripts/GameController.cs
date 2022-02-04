@@ -11,22 +11,27 @@ using Touch = UnityEngine.Touch;
 
 public class GameController : MonoBehaviour
 {
+    public static GameController _gameController;
+    
     public const int baseWidth = 1920;
     public const int baseHeight = 1080;
+    public const float DropdownBaseScale = 3;
     
-    public static GameController _gameController;
+    [Header("Canvas control")]
     [SerializeField] private GameObject canvas;
     [SerializeField] private GameObject ropeCanvas;
     [SerializeField] private GameObject levelSelect;
     
+    [Header("Object copies")]
     [SerializeField] private GameObject pointPrefab;
     [SerializeField] private GameObject ropePrefab;
-    [SerializeField] private string pathToLevelData;
     
-    private TouchControl touchControl;
+    [SerializeField] private TextAsset jsonFile;
+    
     private List<Point> points;
-
     private Queue<SliderScript> sliders;
+
+    private TouchControl touchControl;
     public LevelCollection levelCollection;
     private SliderScript currentSlider;
     private int currentPoint;
@@ -39,7 +44,6 @@ public class GameController : MonoBehaviour
         touchControl = new TouchControl();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         touchControl.Touch.TouchPress.started += ctx => StartTouch(ctx);
@@ -47,14 +51,14 @@ public class GameController : MonoBehaviour
         points = new List<Point>();
         sliders = new Queue<SliderScript>();
         dropdown = levelSelect.GetComponentInChildren<Dropdown>();
-        
-        print(Screen.height + " " + Screen.width);
+        dropdown.transform.localScale = new Vector3(Screen.height * DropdownBaseScale / baseHeight, 
+            Screen.height * DropdownBaseScale / baseHeight, 
+            1);
         
         LoadLevelData();
         LoadDropdown();
     }
     
-    // Update is called once per frame
     void Update()
     {
         if (sliders.Count != 0)
@@ -74,20 +78,25 @@ public class GameController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Load selected level for level dropdown
+    /// </summary>
     public void LoadLevel()
     {
         if (points != null)
         {
             ClearLevel();
         }
+        
         int index = dropdown.value;
         string[] pointData = levelCollection.levels[index].level_data;
         GameObject container = new GameObject("Container", typeof(RectTransform));
         container.transform.SetParent(canvas.transform);
         RectTransform rect = container.GetComponent<RectTransform>();
+        print(Screen.height);
         rect.anchorMin = new Vector2(0, 1);
         rect.anchorMax = new Vector2(0, 1);
-        rect.position = new Vector3(0,1080, 0);
+        rect.position = new Vector3(0,Screen.height, 0);
 
         for (int i = 0; i < pointData.Length; i+=2)
         {
@@ -101,26 +110,23 @@ public class GameController : MonoBehaviour
         currentPoint = 0;
         HideLevelSelect();
     }
-
-    void HideLevelSelect()
-    {
-        levelSelect.SetActive(false);
-    }
-
-    void ShowLevelSelect()
-    {
-        levelSelect.SetActive(true);
-    }
     
+    /// <summary>
+    /// Load level data from .json file
+    /// </summary>
     void LoadLevelData()
     {
-        using (StreamReader reader = new StreamReader(pathToLevelData))
-        {
-            string json = reader.ReadToEnd();
-            levelCollection = JsonUtility.FromJson<LevelCollection>(json);
-        }
+        // using (StreamReader reader = new StreamReader(pathToLevelData))
+        // {
+        //     string json = reader.ReadToEnd();
+        //     levelCollection = JsonUtility.FromJson<LevelCollection>(json);
+        // }
+        levelCollection = JsonUtility.FromJson<LevelCollection>(jsonFile.text);
     }
 
+    /// <summary>
+    /// Load level choices from level_data
+    /// </summary>
     void LoadDropdown()
     {
         List<string> options = new List<string>();
@@ -131,6 +137,7 @@ public class GameController : MonoBehaviour
         dropdown.AddOptions(options);
     }
     
+    // Clear current level GameObjects
     void ClearLevel()
     {
         points = new List<Point>();
@@ -146,14 +153,30 @@ public class GameController : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// Reset current animating slider to null
+    /// </summary>
     public void ClearCurrentSlider()
     {
         currentSlider = null;
         sliders.Dequeue();
     }
 
-    
+    /// <summary>
+    /// Hide level select canvas
+    /// </summary>
+    void HideLevelSelect()
+    {
+        levelSelect.SetActive(false);
+    }
 
+    /// <summary>
+    /// Show level select canvas
+    /// </summary>
+    void ShowLevelSelect()
+    {
+        levelSelect.SetActive(true);
+    }
 
     private void OnEnable()
     {
@@ -165,11 +188,13 @@ public class GameController : MonoBehaviour
         touchControl.Disable();
     }
 
+    /// <summary>
+    /// Method called upon touchscreen touch start
+    /// </summary>
+    /// <param name="context">Input context</param>
     private void StartTouch(InputAction.CallbackContext context)
     {
         Vector2 touchPosition = touchControl.Touch.TouchPosition.ReadValue<Vector2>();
-        print("Touch started" + touchPosition);
-
         if (currentPoint == points.Count)
         {
             return;
@@ -199,6 +224,11 @@ public class GameController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Create rope between designated points in List<Point> points.
+    /// </summary>
+    /// <param name="startPoint">Rope starting point index in array</param>
+    /// <param name="endPoint">Rope end point index in array</param>
     public void CreateRope(int startPoint, int endPoint)
     {
         GameObject obj = Instantiate(ropePrefab, ropeCanvas.transform);
@@ -207,8 +237,10 @@ public class GameController : MonoBehaviour
         sliderScript.SetTargetPositions(points[startPoint].GetPosition(), points[endPoint].GetPosition());
         sliderScript.gameObject.SetActive(false);
     }
-    
-    
+
+    /// <summary>
+    /// Method called on LevelEnd
+    /// </summary>
     public void LevelEnd()
     {
         ShowLevelSelect();
@@ -218,15 +250,20 @@ public class GameController : MonoBehaviour
     
     private void EndTouch(InputAction.CallbackContext context)
     {
-        print("Touch ended");
     }
 
+    /// <summary>
+    /// Class for reading .json data
+    /// </summary>
     [Serializable]
     public class LevelCollection
     {
         public Level[] levels;
     }
     
+    /// <summary>
+    /// Class for reading .json data
+    /// </summary>
     [Serializable]
     public class Level
     {

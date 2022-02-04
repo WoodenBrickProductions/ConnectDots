@@ -15,6 +15,9 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
+/// <summary>
+/// Helper class for new Unity InputSystem
+/// </summary>
 public partial class @TouchControl : IInputActionCollection2, IDisposable
 {
     public InputActionAsset asset { get; }
